@@ -2,6 +2,7 @@ package com.mahesaiqbal.mynoteapp.repository
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import com.mahesaiqbal.mynoteapp.database.Note
 import com.mahesaiqbal.mynoteapp.database.NoteRoomDatabase
 import com.mahesaiqbal.mynoteapp.database.NoteDao
@@ -21,17 +22,17 @@ class NoteRepository(application: Application) {
         mNotesDao = db.noteDao()
     }
 
-    fun getAllNotes(): LiveData<MutableList<Note>> = mNotesDao.getAllNotes()
+    fun getAllNotes(): DataSource.Factory<Int, Note> = mNotesDao.getAllNotes()
 
     fun insert(note: Note) {
-        executorService.execute(Runnable { mNotesDao.insert(note) })
+        executorService.execute({ mNotesDao.insert(note) })
     }
 
     fun delete(note: Note) {
-        executorService.execute(Runnable { mNotesDao.delete(note) })
+        executorService.execute({ mNotesDao.delete(note) })
     }
 
     fun update(note: Note) {
-        executorService.execute(Runnable { mNotesDao.update(note) })
+        executorService.execute({ mNotesDao.update(note) })
     }
 }

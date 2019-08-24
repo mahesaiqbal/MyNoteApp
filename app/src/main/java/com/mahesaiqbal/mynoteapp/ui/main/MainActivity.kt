@@ -13,11 +13,13 @@ import androidx.lifecycle.Observer
 import com.mahesaiqbal.mynoteapp.database.Note
 import com.mahesaiqbal.mynoteapp.ui.insert.NoteAddUpdateActivity
 import android.content.Intent
+import androidx.paging.PagedList
+import com.mahesaiqbal.mynoteapp.ui.adapter.NotePagedListAdapter
 import com.mahesaiqbal.mynoteapp.ui.insert.NoteAddUpdateActivity.Companion.REQUEST_UPDATE
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var noteAdapter: NoteAdapter
+    lateinit var noteAdapter: NotePagedListAdapter
     lateinit var viewModel: MainViewModel
 
     private fun obtainViewModel(activity: AppCompatActivity): MainViewModel {
@@ -33,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         viewModel = obtainViewModel(this)
         viewModel.getAllNotes().observe(this, noteObserver)
 
-        noteAdapter = NoteAdapter(this)
+        noteAdapter = NotePagedListAdapter(this)
 
         rv_notes.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
@@ -49,10 +51,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val noteObserver = object : Observer<MutableList<Note>> {
-        override fun onChanged(noteList: MutableList<Note>?) {
+    private val noteObserver = object : Observer<PagedList<Note>> {
+        override fun onChanged(noteList: PagedList<Note>?) {
             if (noteList != null) {
-                noteAdapter.setListNotes(noteList)
+                noteAdapter.submitList(noteList)
             }
         }
     }
